@@ -12,47 +12,46 @@ try {
 
     $comment = new Comment();
 
-    if (session_id()) { // TODO check for session in methods that edit
-
 // check which type of request was made
-        if ($request->isGet()) {
-            $response["error"] = false;
-            $response["msg"] = "Get";
-            if (array_key_exists("id", $reqVars)) {
-                try {
-                    $queryResult = $comment->findById($reqVars["id"]);
+    if ($request->isGet()) {
+        $response["error"] = false;
+        $response["msg"] = "Get";
+        if (array_key_exists("id", $reqVars)) {
+            try {
+                $queryResult = $comment->findById($reqVars["id"]);
 
-                    $response["error"] = false;
-                    $response["id"] = $queryResult["id"];
-                    $response["user_id"] = $queryResult["user_id"];
-                    $response["post_id"] = $queryResult["post_id"];
-                    $response["comment_date"] = $queryResult["comment_date"];
-                    $response["comment_text"] = $queryResult["comment_text"];
-                } catch (Exception $e) {
-                    $response["error"] = true;
-                    $response["msg"] = $e->getMessage();
-                }
-            } elseif (array_key_exists("post_id", $reqVars)) {
-                try {
-                    $queryResult = $comment->findByPostId($reqVars["user_id"]);
-
-                    $response["error"] = false;
-                    //$response["id"] = $queryResult["id"];
-                    $response["user_id"] = $queryResult["user_id"];
-                    $response["username"] = $queryResult["username"];
-                    $response["post_id"] = $queryResult["post_id"];
-                    //$response["comment_date"] = $queryResult["comment_date"];
-                    //$response["comment_text"] = $queryResult["comment_text"];
-                    $response["comments"] = $queryResult;
-                } catch (Exception $e) {
-                    $response["error"] = true;
-                    $response["msg"] = $e->getMessage();
-                }
-            } else {
+                $response["error"] = false;
+                $response["id"] = $queryResult["id"];
+                $response["user_id"] = $queryResult["user_id"];
+                $response["post_id"] = $queryResult["post_id"];
+                $response["comment_date"] = $queryResult["comment_date"];
+                $response["comment_text"] = $queryResult["comment_text"];
+            } catch (Exception $e) {
                 $response["error"] = true;
-                $response["msg"] = "No post id or user id given";
+                $response["msg"] = $e->getMessage();
             }
-        } elseif ($request->isPost()) {
+        } elseif (array_key_exists("post_id", $reqVars)) {
+            try {
+                $queryResult = $comment->findByPostId($reqVars["user_id"]);
+
+                $response["error"] = false;
+                //$response["id"] = $queryResult["id"];
+                $response["user_id"] = $queryResult["user_id"];
+                $response["username"] = $queryResult["username"];
+                $response["post_id"] = $queryResult["post_id"];
+                //$response["comment_date"] = $queryResult["comment_date"];
+                //$response["comment_text"] = $queryResult["comment_text"];
+                $response["comments"] = $queryResult;
+            } catch (Exception $e) {
+                $response["error"] = true;
+                $response["msg"] = $e->getMessage();
+            }
+        } else {
+            $response["error"] = true;
+            $response["msg"] = "No post id or user id given";
+        }
+    } elseif ($request->isPost()) {
+        if (array_key_exists('user_id', $_SESSION) && $reqVars['user_id'] === $_SESSION['user_id']) {
             $response["error"] = false;
             $response["msg"] = "Post";
             if (array_key_exists("id", $reqVars) && array_key_exists("user_id", $reqVars)
@@ -69,7 +68,13 @@ try {
                 $response["error"] = true;
                 $response["msg"] = "Missing parameter";
             }
-        } elseif ($request->isPut()) {
+        }
+        else {
+            $response["error"] = true;
+            $response["msg"] = "Not logged in";
+        }
+    } elseif ($request->isPut()) {
+        if (array_key_exists('user_id', $_SESSION) && $reqVars['user_id'] === $_SESSION['user_id']) {
             if (array_key_exists("id", $reqVars) && array_key_exists("username", $reqVars)
                 && array_key_exists("password", $reqVars)) {
                 try {
@@ -84,7 +89,13 @@ try {
                 $response["error"] = true;
                 $response["msg"] = "Missing parameter";
             }
-        } elseif ($request->isDelete()) {
+        }
+        else {
+            $response["error"] = true;
+            $response["msg"] = "Not logged in";
+        }
+    } elseif ($request->isDelete()) {
+        if (array_key_exists('user_id', $_SESSION) && $reqVars['user_id'] === $_SESSION['user_id']) {
             $response["error"] = false;
             $response["msg"] = "Delete";
             if (array_key_exists("id", $reqVars)) {
@@ -100,12 +111,16 @@ try {
                 $response["error"] = true;
                 $response["msg"] = "No id given";
             }
-        } else {
-            $response["error"] = true;
-            $response["msg"] = "Wrong Request Type";
         }
-        echo json_encode($response);
+        else {
+            $response["error"] = true;
+            $response["msg"] = "Not logged in";
+        }
+    } else {
+        $response["error"] = true;
+        $response["msg"] = "Wrong Request Type";
     }
+    echo json_encode($response);
 }
 catch (Exception $e) {
     $response['error'] = true;
