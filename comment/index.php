@@ -4,6 +4,7 @@ require_once "../database/Database.php";
 require_once "Comment.php";
 require_once "../auth/index.php";
 
+session_start();
 $request = new RestRequest();
 $response = array("error" => false, "msg" => "");
 try {
@@ -11,7 +12,7 @@ try {
 
     $comment = new Comment();
 
-    if (session_id()) {
+    if (session_id()) { // TODO check for session in methods that edit
 
 // check which type of request was made
         if ($request->isGet()) {

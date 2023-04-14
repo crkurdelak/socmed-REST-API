@@ -15,25 +15,25 @@ $response = array("error" => false, "msg" => "");
 if ($request->isPost()) {
     // create session or join existing session
     session_start();
-    $name = $reqVars['user'];
+    $id = $reqVars['id'];
 
     // if already logged in
-    if(array_key_exists('username', $_SESSION)){
-        $username = $_SESSION["username"];
+    if(array_key_exists('user_id', $_SESSION)){
+        $user_id = $_SESSION["user_id"];
 
-        if ($name === $username) {
-            sendStatus($username . " is already logged in");
+        if ($id === $user_id) {
+            sendStatus($user_id . " is already logged in");
             //echo "Already logged in! ".$_SESSION['username'];
         }
         else {
-            sendStatus("Cannot log $name in, $username already logged in");
+            sendStatus("Cannot log $id in, $user_id already logged in");
         }
     }
     // if new login
     else {
         if (array_key_exists('user', $reqVars)) {
             try {
-                $password = (new User)->findByUsername($name)["password"];
+                $password = (new User)->findById($id)["password"];
             } catch (Exception $e) {
 
             }
@@ -41,10 +41,10 @@ if ($request->isPost()) {
                 // pretend this password was retrieved from db
                 if (password_verify($reqVars["password"], $password)) {
                     // register username with session
-                    $_SESSION['username'] = $name;
+                    $_SESSION['user_id'] = $id;
 
                     // build response
-                    sendStatus($name . " logged in");
+                    sendStatus($id . " logged in");
                     //echo "Welcome, " .$reqVars['user'];
                 }
             }
@@ -60,9 +60,9 @@ if ($request->isPost()) {
 }
 else if ($request->isDelete()) {
     session_start();
-    if (array_key_exists("username", $_SESSION)) {
-        $username = $_SESSION["username"];
-        sendStatus("Session for $username ended.");
+    if (array_key_exists('user_id', $_SESSION)) {
+        $user_id = $_SESSION['user_id'];
+        sendStatus("Session for $user_id ended.");
     }
     else {
         sendStatus("Session ended for no one");
@@ -74,9 +74,9 @@ else if ($request->isGet()) {
     session_start();
 
     // check if logged in
-    if (array_key_exists("username", $_SESSION)) {
-        $username = $_SESSION["username"];
-        sendStatus("$username logged in");
+    if (array_key_exists('user_id', $_SESSION)) {
+        $user_id = $_SESSION['user_id'];
+        sendStatus("$user_id logged in");
     }
     else {
         sendStatus("no one logged in");
