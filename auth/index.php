@@ -1,6 +1,6 @@
 <?php
 
-require_once "RestRequest.php";
+require_once "../RestRequest.php";
 require_once "../user/User.php";
 
 function sendStatus($msg) {

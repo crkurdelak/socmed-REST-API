@@ -22,7 +22,7 @@ class Comment
      * @throws Exception
      */
     public function create(array $data) {
-        $sql = 'INSERT INTO comment (id, user_id, post_id, comment_date, comment_text) 
+        $sql = 'INSERT INTO blog_comment (id, user_id, post_id, comment_date, comment_text) 
         VALUES(:id, :user_id, :post_id, CURRENT_DATE, :post_text);';
 
         $id_sql = 'SELECT MAX(id) FROM comment;';
@@ -57,7 +57,7 @@ class Comment
      * @throws Exception
      */
     public function findById(string $id): array {
-        $sql = 'SELECT * FROM comment WHERE id = ?';
+        $sql = 'SELECT * FROM blog_comment WHERE id = ?';
 
         $query = $this->db->prepare($sql);
         $query->execute([$id]);
@@ -81,7 +81,7 @@ class Comment
      * @throws Exception
      */
     public function findByPostId(string $post_id): array {
-        $sql = 'SELECT * FROM comment NATURAL JOIN post WHERE post.id = ?';
+        $sql = 'SELECT * FROM blog_comment NATURAL JOIN post WHERE post.id = ?';
 
         $query = $this->db->prepare($sql);
         $query->execute([$post_id]);
@@ -106,7 +106,7 @@ class Comment
      * @throws Exception
      */
     public function update(array $data) {
-        $sql = 'UPDATE comment SET comment_text = :comment_text WHERE id = :id';
+        $sql = 'UPDATE blog_comment SET comment_text = :comment_text WHERE id = :id';
 
         $queryParams = [
             ':id' => $data['id'],
@@ -129,7 +129,7 @@ class Comment
      * @throws Exception
      */
     public function deleteById(string $id) {
-        $sql = 'DELETE FROM comment WHERE id = ?';
+        $sql = 'DELETE FROM blog_comment WHERE id = ?';
 
         $query = $this->db->prepare($sql);
         $success = $query->execute([$id]);

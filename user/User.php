@@ -22,9 +22,9 @@ class User
      * @throws Exception
      */
     public function create(array $data) {
-        $sql = 'INSERT INTO user (id, username, password) VALUES(:id, :username, :password);';
+        $sql = 'INSERT INTO blog_user (id, username, password) VALUES(:id, :username, :password);';
 
-        $id_sql = 'SELECT MAX(id) FROM user;';
+        $id_sql = 'SELECT MAX(id) FROM blog_user;';
         $this->db->beginTransaction();
         $id_query = $this->db->prepare($id_sql);
         $id_query->execute();
@@ -55,7 +55,7 @@ class User
      * @throws Exception
      */
     public function findById(string $id): array {
-        $sql = 'SELECT * FROM user WHERE id = ?';
+        $sql = 'SELECT * FROM blog_user WHERE id = ?';
 
         $query = $this->db->prepare($sql);
         $query->execute([$id]);
@@ -78,7 +78,7 @@ class User
      * @throws Exception
      */
     public function findByUsername(string $username): array {
-        $sql = 'SELECT * FROM user WHERE username = ?';
+        $sql = 'SELECT * FROM blog_user WHERE username = ?';
 
         $query = $this->db->prepare($sql);
         $query->execute([$username]);
@@ -101,7 +101,7 @@ class User
      * @throws Exception
      */
     public function update(array $data) {
-        $sql = 'UPDATE customer SET username = :username, new_password = :new_password 
+        $sql = 'UPDATE blog_user SET username = :username, new_password = :new_password 
                 WHERE id = :id AND old_password = ;old_password';
 
         $queryParams = [
@@ -127,7 +127,7 @@ class User
      * @throws Exception
      */
     public function deleteById(string $id) {
-        $sql = 'DELETE FROM user WHERE id = ?';
+        $sql = 'DELETE FROM blog_user WHERE id = ?';
 
         $query = $this->db->prepare($sql);
         $success = $query->execute([$id]);
@@ -146,7 +146,7 @@ class User
      * @throws Exception
      */
     public function deleteByUsername(string $username) {
-        $sql = 'DELETE FROM userer WHERE username = ?';
+        $sql = 'DELETE FROM blog_user WHERE username = ?';
 
         $query = $this->db->prepare($sql);
         $success = $query->execute([$username]);

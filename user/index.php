@@ -58,7 +58,7 @@ try {
             try {
                 // encrypt user password
                 $cipherPass = password_hash($reqVars["password"], CRYPT_BLOWFISH);
-                $user->create([$reqVars["username"], $cipherPass]);
+                $user->create(['username' => $reqVars["username"], 'password' => $cipherPass]);
                 $response["error"] = false;
                 $response["msg"] = "Success";
             } catch (Exception $e) {
