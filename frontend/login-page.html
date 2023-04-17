@@ -2,13 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>crumblr</title>
 </head>
 <body>
-<div class="container">
-    <h1>My First Bootstrap Page</h1>
-    <p>This part is inside a .container class.</p>
-    <p>The .container class provides a responsive fixed width container.</p>
+<div class="container-fluid">
+    <h1>crumblr</h1>
+    <p>login</p>
+    <form id="login_form">
+        <div class="mb-3 mt-3">
+            <label for="username" class="form-label">Username:</label>
+            <input type="username" class="form-control" id="username" placeholder="Enter username" name="username">
+        </div>
+        <div class="mb-3">
+            <label for="pwd" class="form-label">Password:</label>
+            <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pswd">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <div id="response">
+
+    </div>
+    <div>
+        <p>Don't have an account yet?</p>
+        <a href="signup-page.html" class="btn btn-primary">Sign up</a>
+    </div>
+
+    <script type="text/javascript">
+        const form = document.getElementById("login_form");
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            console.log(new FormData(form));
+            const url = '../auth/index.php';
+            fetch(url, {
+                body: new FormData(form),
+                method: 'POST'
+            }).then((response) => response.json())
+                .then(json => {
+                    document.getElementById('response').innerText = JSON.stringify(json.data);
+                }).catch(() => {
+                    document.getElementById('response').innerText = 'error'
+            })
+        });
+    </script>
 </div>
 </body>
 </html>
