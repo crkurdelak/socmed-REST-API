@@ -26,6 +26,23 @@
   <div id="response">
 
   </div>
+  <script type="text/javascript">
+    const form = document.getElementById("signup_form");
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      console.log(new FormData(form));
+      const url = '../user/index.php';
+      fetch(url, {
+        body: new FormData(form),
+        method: 'POST'
+      }).then((response) => response.json())
+              .then(json => {
+                document.getElementById('response').innerText = JSON.stringify(json.data);
+              }).catch(() => {
+        document.getElementById('response').innerText = 'error'
+      })
+    });
+  </script>
 </div>
 </body>
 </html>
