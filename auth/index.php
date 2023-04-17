@@ -31,14 +31,13 @@ if ($request->isPost()) {
     }
     // if new login
     else {
-        if (array_key_exists('user', $reqVars)) {
+        if (array_key_exists('id', $reqVars)) {
             try {
                 $password = (new User)->findById($id)["password"];
             } catch (Exception $e) {
-
+                sendStatus("User not found");
             }
             if ($password) {
-                // pretend this password was retrieved from db
                 if (password_verify($reqVars["password"], $password)) {
                     // register username with session
                     $_SESSION['user_id'] = $id;
