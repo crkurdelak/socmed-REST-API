@@ -2,7 +2,6 @@
 require_once "../RestRequest.php";
 require_once "../database/Database.php";
 require_once "User.php";
-require_once "../auth/index.php";
 
 session_start();
 $request = new RestRequest();
@@ -15,7 +14,7 @@ try {
 
 // check which type of request was made
     if ($request->isGet()) {
-        if (array_key_exists('user_id', $_SESSION) && $reqVars['user_id'] === $_SESSION['user_id']) {
+        if (array_key_exists('user_id', $_SESSION) && $reqVars['id'] === $_SESSION['user_id']) {
             $response["error"] = false;
             $response["msg"] = "Get";
             if (array_key_exists("username", $reqVars)) {
@@ -70,14 +69,15 @@ try {
             $response["msg"] = "Missing parameter";
         }
     } elseif ($request->isPut()) {
-        if (array_key_exists('user_id', $_SESSION) && $reqVars['user_id'] === $_SESSION['user_id']) {
+        if (array_key_exists('user_id', $_SESSION) && $reqVars['id'] === $_SESSION['user_id']) {
             if (array_key_exists("id", $reqVars) && array_key_exists("username", $reqVars)
-                && array_key_exists("password", $reqVars)) {
+                && array_key_exists("old_password", $reqVars) && array_key_exists("new_password", $reqVars)) {
                 try {
                     // encrypt new password
-                    $cipherPass = password_hash($reqVars["password"], CRYPT_BLOWFISH);
-                    $user->update([$reqVars['id'], $reqVars['username'], $reqVars['new_password'],
-                        $reqVars['old_password']]);
+                    $cipherPass = password_hash($reqVars["new_password"], CRYPT_BLOWFISH);
+                    $cipherPassOld = password_hash($reqVars["old_password"], CRYPT_BLOWFISH);
+                    $user->update(['id' => $reqVars['id'], "username" => $reqVars['username'],
+                        "new_password" => $cipherPass, "old_password" => $cipherPassOld]);
                     $response["error"] = false;
                     $response["msg"] = "Success";
                 } catch (Exception $e) {
@@ -94,7 +94,7 @@ try {
             $response["msg"] = "Not logged in";
         }
     } elseif ($request->isDelete()) {
-        if (array_key_exists('user_id', $_SESSION) && $reqVars['user_id'] === $_SESSION['user_id']) {
+        if (array_key_exists('user_id', $_SESSION) && $reqVars['id'] === $_SESSION['user_id']) {
             $response["error"] = false;
             $response["msg"] = "Delete";
             if (array_key_exists("username", $reqVars) || array_key_exists("id", $reqVars)) {

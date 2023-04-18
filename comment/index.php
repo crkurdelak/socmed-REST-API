@@ -2,7 +2,6 @@
 require_once "../RestRequest.php";
 require_once "../database/Database.php";
 require_once "Comment.php";
-require_once "../auth/index.php";
 
 session_start();
 $request = new RestRequest();

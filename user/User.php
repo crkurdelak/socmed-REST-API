@@ -101,20 +101,21 @@ class User
      * @throws Exception
      */
     public function update(array $data) {
-        $sql = 'UPDATE blog_user SET username = :username, new_password = :new_password 
-                WHERE id = :id AND old_password = ;old_password';
+        $sql = 'UPDATE blog_user SET username = :username, password = :new_password 
+                WHERE id = :id';
 
         $queryParams = [
             ':id' => $data['id'],
             ':username' => $data['username'],
             ':new_password' => $data['new_password'],
-            ':old_password' => $data['old_password']
+            //':old_password' => $data['old_password']
         ];
 
         $query = $this->db->prepare($sql);
         $success = $query->execute($queryParams);
+        $num_rows = $query->rowCount();
 
-        if (!$success) {
+        if (!$success || $num_rows < 1) {
             throw new Exception('Failed to update user');
         }
     }

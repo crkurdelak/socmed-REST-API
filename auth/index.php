@@ -46,9 +46,12 @@ if ($request->isPost()) {
                     sendStatus($id . " logged in");
                     //echo "Welcome, " .$reqVars['user'];
                 }
+                else {
+                    sendStatus("Incorrect password");
+                }
             }
             else {
-                sendStatus("Incorrect password");
+                sendStatus("No password given");
             }
         }
         else {
