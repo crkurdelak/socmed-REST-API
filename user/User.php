@@ -138,23 +138,4 @@ class User
 
         }
     }
-
-
-    /**
-     * Deletes the user with the given username.
-     * @param string $username
-     * @return void
-     * @throws Exception
-     */
-    public function deleteByUsername(string $username) {
-        $sql = 'DELETE FROM blog_user WHERE username = ?';
-
-        $query = $this->db->prepare($sql);
-        $success = $query->execute([$username]);
-
-        if (!$success) {
-            throw new Exception('blog-db\Could not delete  user: ' . $username);
-
-        }
-    }
 }

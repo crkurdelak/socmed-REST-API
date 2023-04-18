@@ -47,6 +47,7 @@ class Post
         if (!$success) {
             throw new Exception('Failed to create post');
         }
+        return $id;
     }
 
 
@@ -57,7 +58,8 @@ class Post
      * @throws Exception
      */
     public function findById(string $id): array {
-        $sql = 'SELECT * FROM post WHERE id = ?';
+        $sql = 'SELECT post.*, blog_user.username FROM post LEFT JOIN blog_user ON blog_user.id = post.user_id 
+                                  WHERE post.id = ?';
 
         $query = $this->db->prepare($sql);
         $query->execute([$id]);
@@ -81,7 +83,8 @@ class Post
      * @throws Exception
      */
     public function findByUserId(string $user_id): array {
-        $sql = 'SELECT * FROM user NATURAL JOIN post WHERE user.id = ?';
+        $sql = 'SELECT post.*, blog_user.username FROM blog_user RIGHT JOIN post ON blog_user.id = post.user_id 
+                                  WHERE blog_user.id = ?';
 
         $query = $this->db->prepare($sql);
         $query->execute([$user_id]);
@@ -93,9 +96,7 @@ class Post
 
         }
 
-        //return ["id" => $posts["id"], "username" => $posts["username"], "user_id" => $posts["user_id"], "post_date" => $posts["post_date"],
-        //    "post_text" => $posts["post_text"], "extra" => $posts["extra"]];
-        return json_encode($posts);
+        return $posts;
     }
 
 
@@ -107,18 +108,27 @@ class Post
      */
     public function update(array $data) {
         $sql = 'UPDATE post SET post_text = :post_text, extra = :extra WHERE id = :id';
+        $userid_sql = 'SELECT user_id FROM post WHERE id = ?';
+        $userid_query = $this->db->prepare($userid_sql);
+        $user_id = $userid_query->execute([$data["id"]]);
 
-        $queryParams = [
-            ':id' => $data['id'],
-            ':post_text' => $data['post_text'],
-            ':extra' => $data['extra']
-        ];
+        if ($user_id === $data["session_userid"]) {
 
-        $query = $this->db->prepare($sql);
-        $success = $query->execute($queryParams);
+            $queryParams = [
+                ':id' => $data['id'],
+                ':post_text' => $data['post_text'],
+                ':extra' => $data['extra']
+            ];
 
-        if (!$success) {
-            throw new Exception('Failed to update post');
+            $query = $this->db->prepare($sql);
+            $success = $query->execute($queryParams);
+
+            if (!$success) {
+                throw new Exception('Failed to update post');
+            }
+        }
+        else {
+            throw new Exception('That is someone else\'s post');
         }
     }
 

@@ -36,8 +36,8 @@ try {
 
                 $response["error"] = false;
                 //$response["id"] = $queryResult["id"];
-                $response["user_id"] = $queryResult["user_id"];
-                $response["username"] = $queryResult["username"];
+                //$response["user_id"] = $queryResult["user_id"];
+                //$response["username"] = $queryResult["username"];
                 //$response["post_date"] = $queryResult["post_date"];
                 //$response["post_text"] = $queryResult["post_text"];
                 //$response["extra"] = $queryResult["extra"];
@@ -54,21 +54,21 @@ try {
         if (array_key_exists('user_id', $_SESSION) && $reqVars['user_id'] === $_SESSION['user_id']) {
             $response["error"] = false;
             $response["msg"] = "Post";
-            if (array_key_exists("id", $reqVars) && array_key_exists("user_id", $reqVars)
+            if (array_key_exists("user_id", $reqVars)
                 && array_key_exists("post_text", $reqVars)
                 && array_key_exists("extra", $reqVars)) {
                 try {
-                    $post->create([$reqVars["id"], $reqVars["user_id"], $reqVars["post_text"],
-                        $reqVars["extra"]]);
+                    $new_id = $post->create(["user_id" => $reqVars["user_id"], "post_text" => $reqVars["post_text"],
+                        "extra" => json_encode($reqVars["extra"])]);
                     $response["error"] = false;
-                    $response["msg"] = "Success";
+                    $response["msg"] = $new_id;
                 } catch (Exception $e) {
                     $response["error"] = true;
                     $response["msg"] = $e->getMessage();
                 }
             } else {
                 $response["error"] = true;
-                $response["msg"] = "Missing parameter";
+                $response["msg"] = "Missing parameter".print_r($reqVars, true);
             }
         }
         else {
@@ -76,11 +76,12 @@ try {
             $response["msg"] = "Not logged in";
         }
     } elseif ($request->isPut()) {
-        if (array_key_exists('user_id', $_SESSION) && $reqVars['user_id'] === $_SESSION['user_id']) {
-            if (array_key_exists("id", $reqVars) && array_key_exists("username", $reqVars)
-                && array_key_exists("password", $reqVars)) {
+        if (array_key_exists('user_id', $_SESSION)) {
+            if (array_key_exists("id", $reqVars) && array_key_exists("post_text", $reqVars)
+                && array_key_exists("extra", $reqVars)) {
                 try {
-                    $post->update([$reqVars["id"], $reqVars["post_text"], $reqVars["extra"]]);
+                    $post->update(["id" => $reqVars["id"], "post_text" => $reqVars["post_text"],
+                        "extra" => $reqVars["extra"], "session_userid" => $_SESSION['user_id']]);
                     $response["error"] = false;
                     $response["msg"] = "Success";
                 } catch (Exception $e) {

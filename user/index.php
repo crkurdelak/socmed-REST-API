@@ -98,22 +98,13 @@ try {
             $response["error"] = false;
             $response["msg"] = "Delete";
             if (array_key_exists("username", $reqVars) || array_key_exists("id", $reqVars)) {
-                if (array_key_exists("username", $reqVars)) {
-                    try {
-                        $user->deleteByUsername($reqVars["username"]);
-                    } catch (Exception $e) {
-                        $response["error"] = true;
-                        $response["msg"] = "Username does not exist";
-                    }
-                } else {
-                    try {
-                        $user->deleteById($reqVars["id"]);
-                        $response["error"] = false;
-                        $response["msg"] = "Success";
-                    } catch (Exception $e) {
-                        $response["error"] = true;
-                        $response["msg"] = $e->getMessage();
-                    }
+                try {
+                    $user->deleteById($reqVars["id"]);
+                    $response["error"] = false;
+                    $response["msg"] = "Success";
+                } catch (Exception $e) {
+                    $response["error"] = true;
+                    $response["msg"] = $e->getMessage();
                 }
             } else {
                 $response["error"] = true;
