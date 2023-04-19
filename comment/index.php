@@ -74,11 +74,11 @@ try {
             $response["msg"] = "Not logged in";
         }
     } elseif ($request->isPut()) {
-        if (array_key_exists('user_id', $_SESSION) && $reqVars['user_id'] === $_SESSION['user_id']) {
-            if (array_key_exists("id", $reqVars) && array_key_exists("username", $reqVars)
-                && array_key_exists("password", $reqVars)) {
+        if (array_key_exists('user_id', $_SESSION)) {
+            if (array_key_exists("id", $reqVars) && array_key_exists("comment_text", $reqVars)) {
                 try {
-                    $comment->update([$reqVars["id"], $reqVars["comment_text"]]);
+                    $comment->update(["id" => $reqVars["id"], "comment_text" => $reqVars["comment_text"],
+                        "session_userid" => $_SESSION['user_id']]);
                     $response["error"] = false;
                     $response["msg"] = "Success";
                 } catch (Exception $e) {
@@ -95,12 +95,12 @@ try {
             $response["msg"] = "Not logged in";
         }
     } elseif ($request->isDelete()) {
-        if (array_key_exists('user_id', $_SESSION) && $reqVars['user_id'] === $_SESSION['user_id']) {
+        if (array_key_exists('user_id', $_SESSION)) {
             $response["error"] = false;
             $response["msg"] = "Delete";
-            if (array_key_exists("id", $reqVars)) {
+            if (array_key_exists("id", $reqVars) && array_key_exists("user_id", $reqVars)) {
                 try {
-                    $comment->deleteById($reqVars["id"]);
+                    $comment->deleteById(["id" => $reqVars["id"], "session_userid" => $reqVars["user_id"]]);
                     $response["error"] = false;
                     $response["msg"] = "Success";
                 } catch (Exception $e) {

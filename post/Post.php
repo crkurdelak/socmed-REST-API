@@ -108,6 +108,7 @@ class Post
      */
     public function update(array $data) {
         $sql = 'UPDATE post SET post_text = :post_text, extra = :extra WHERE id = :id';
+
         $userid_sql = 'SELECT user_id FROM post WHERE id = ?';
         $userid_query = $this->db->prepare($userid_sql);
         $user_id = $userid_query->execute([$data["id"]]);

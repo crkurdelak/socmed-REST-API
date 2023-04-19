@@ -112,16 +112,26 @@ class Comment
     public function update(array $data) {
         $sql = 'UPDATE blog_comment SET comment_text = :comment_text WHERE id = :id';
 
-        $queryParams = [
-            ':id' => $data['id'],
-            ':comment_text' => $data['comment_text']
-        ];
+        $userid_sql = 'SELECT user_id FROM post WHERE id = ?';
+        $userid_query = $this->db->prepare($userid_sql);
+        $user_id = $userid_query->execute([$data["id"]]);
 
-        $query = $this->db->prepare($sql);
-        $success = $query->execute($queryParams);
+        if ($user_id == $data["session_userid"]) {
+            $queryParams = [
+                ':id' => $data['id'],
+                ':comment_text' => $data['comment_text']
+            ];
 
-        if (!$success) {
-            throw new Exception('Failed to update comment');
+            $query = $this->db->prepare($sql);
+            $success = $query->execute($queryParams);
+
+            if (!$success) {
+                throw new Exception('Failed to update comment');
+            }
+        }
+        else {
+            throw new Exception('That is someone else\'s comment. your id: '.$data["session_userid"].'
+             comment user id:'.$data["id"]);
         }
     }
 
@@ -132,15 +142,25 @@ class Comment
      * @return void
      * @throws Exception
      */
-    public function deleteById(string $id) {
+    public function deleteById(array $data) {
         $sql = 'DELETE FROM blog_comment WHERE id = ?';
+        $userid_sql = 'SELECT user_id FROM post WHERE id = ?';
 
-        $query = $this->db->prepare($sql);
-        $success = $query->execute([$id]);
+        $userid_query = $this->db->prepare($userid_sql);
+        $user_id = $userid_query->execute([$data["id"]]);
 
-        if (!$success) {
-            throw new Exception('blog-db\Could not delete comment: ' . $id);
+        if ($user_id == $data["session_userid"]) {
+            $query = $this->db->prepare($sql);
+            $success = $query->execute($data["id"]);
 
+            if (!$success) {
+                throw new Exception('blog-db\Could not delete comment: ' . $data["id"]);
+
+            }
+        }
+        else {
+            throw new Exception('That is someone else\'s comment. your id: '.$data["session_userid"].'
+             comment user id:'.$data["id"]);
         }
     }
 }
