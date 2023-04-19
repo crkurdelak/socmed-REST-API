@@ -143,16 +143,26 @@ class Post
     public function deleteById(array $data) {
         $sql = 'DELETE FROM post WHERE id = ?';
         $userid_sql = 'SELECT user_id FROM post WHERE id = ?';
+        $comment_sql = 'DELETE FROM blog_comment WHERE post_id = ?';
+
         $userid_query = $this->db->prepare($userid_sql);
         $user_id = $userid_query->execute([$data["id"]]);
 
         if ($user_id == $data["session_userid"]) {
+            $this->db->beginTransaction();
+            // first delete all the comments on the post
+            $comment_query = $this->db->prepare($comment_sql);
+            $comment_query->execute([$data["id"]]);
+
             $query = $this->db->prepare($sql);
             $success = $query->execute([$data["id"]]);
 
             if (!$success) {
                 throw new Exception('blog-db\Could not delete post: ' . $data["id"]);
 
+            }
+            else {
+                $this->db->commit();
             }
         }
         else {

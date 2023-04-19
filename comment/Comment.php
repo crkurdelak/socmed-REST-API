@@ -23,9 +23,9 @@ class Comment
      */
     public function create(array $data) {
         $sql = 'INSERT INTO blog_comment (id, user_id, post_id, comment_date, comment_text) 
-        VALUES(:id, :user_id, :post_id, CURRENT_DATE, :post_text);';
+        VALUES(:id, :user_id, :post_id, CURRENT_DATE, :comment_text);';
 
-        $id_sql = 'SELECT MAX(id) FROM comment;';
+        $id_sql = 'SELECT MAX(id) FROM blog_comment;';
         $this->db->beginTransaction();
         $id_query = $this->db->prepare($id_sql);
         $id_query->execute();
@@ -81,21 +81,25 @@ class Comment
      * @throws Exception
      */
     public function findByPostId(string $post_id): array {
-        $sql = 'SELECT * FROM blog_comment NATURAL JOIN post WHERE post.id = ?';
+        //$sql = 'SELECT * FROM blog_comment NATURAL JOIN post WHERE post.id = ?';
+        $sql = 'SELECT blog_comment.*, blog_user.username FROM blog_user RIGHT JOIN blog_comment 
+                ON blog_user.id = blog_comment.user_id RIGHT JOIN post ON post.id = blog_comment.post_id 
+                                          WHERE post.id = ?';
 
         $query = $this->db->prepare($sql);
         $query->execute([$post_id]);
 
         $comments = $query->fetchAll(PDO::FETCH_ASSOC);
 
+        // TODO fix issue where instead of error, empty array is returned
         if ($comments === false) {
-            throw new Exception('blog-db\Comments not found: user ' . $post_id);
+            throw new Exception('blog-db\Comments not found: post ' . $post_id);
 
         }
 
         //return ["id" => $comments["id"], "user_id" => $comments["user_id"], "post_id" => $comments["post_id"],
         //        "comment_text" => $comments["comment_text"], "comment_date" => $comments["comment_date"]];
-        return json_encode($comments);
+        return $comments;
     }
 
 

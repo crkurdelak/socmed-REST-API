@@ -31,13 +31,13 @@ try {
             }
         } elseif (array_key_exists("post_id", $reqVars)) {
             try {
-                $queryResult = $comment->findByPostId($reqVars["user_id"]);
+                $queryResult = $comment->findByPostId($reqVars["post_id"]);
 
                 $response["error"] = false;
                 //$response["id"] = $queryResult["id"];
-                $response["user_id"] = $queryResult["user_id"];
-                $response["username"] = $queryResult["username"];
-                $response["post_id"] = $queryResult["post_id"];
+                //$response["user_id"] = $queryResult["user_id"];
+                //$response["username"] = $queryResult["username"];
+                //$response["post_id"] = $queryResult["post_id"];
                 //$response["comment_date"] = $queryResult["comment_date"];
                 //$response["comment_text"] = $queryResult["comment_text"];
                 $response["comments"] = $queryResult;
@@ -53,10 +53,11 @@ try {
         if (array_key_exists('user_id', $_SESSION) && $reqVars['user_id'] === $_SESSION['user_id']) {
             $response["error"] = false;
             $response["msg"] = "Post";
-            if (array_key_exists("id", $reqVars) && array_key_exists("user_id", $reqVars)
+            if (array_key_exists("user_id", $reqVars)
                 && array_key_exists("post_id", $reqVars) && array_key_exists("comment_text", $reqVars)) {
                 try {
-                    $comment->create([$reqVars["id"], $reqVars["user_id"], $reqVars["post_id"], $reqVars["comment_text"]]);
+                    $comment->create(["user_id" => $reqVars["user_id"], "post_id" => $reqVars["post_id"],
+                        "comment_text" => $reqVars["comment_text"]]);
                     $response["error"] = false;
                     $response["msg"] = "Success";
                 } catch (Exception $e) {
