@@ -112,12 +112,12 @@ class Post
         $userid_query = $this->db->prepare($userid_sql);
         $user_id = $userid_query->execute([$data["id"]]);
 
-        if ($user_id === $data["session_userid"]) {
+        if ($user_id == $data["session_userid"]) {
 
             $queryParams = [
                 ':id' => $data['id'],
                 ':post_text' => $data['post_text'],
-                ':extra' => $data['extra']
+                ':extra' => json_encode($data['extra'])
             ];
 
             $query = $this->db->prepare($sql);
@@ -128,7 +128,8 @@ class Post
             }
         }
         else {
-            throw new Exception('That is someone else\'s post');
+            throw new Exception('That is someone else\'s post. your id: '.$data["session_userid"].'
+             post id:'.$data["id"]);
         }
     }
 
@@ -139,15 +140,24 @@ class Post
      * @return void
      * @throws Exception
      */
-    public function deleteById(string $id) {
+    public function deleteById(array $data) {
         $sql = 'DELETE FROM post WHERE id = ?';
+        $userid_sql = 'SELECT user_id FROM post WHERE id = ?';
+        $userid_query = $this->db->prepare($userid_sql);
+        $user_id = $userid_query->execute([$data["id"]]);
 
-        $query = $this->db->prepare($sql);
-        $success = $query->execute([$id]);
+        if ($user_id == $data["session_userid"]) {
+            $query = $this->db->prepare($sql);
+            $success = $query->execute([$data["id"]]);
 
-        if (!$success) {
-            throw new Exception('blog-db\Could not delete post: ' . $id);
+            if (!$success) {
+                throw new Exception('blog-db\Could not delete post: ' . $data["id"]);
 
+            }
+        }
+        else {
+            throw new Exception('That is someone else\'s post. your id: '.$data["session_userid"].'
+             post id:'.$data["id"]);
         }
     }
 }
