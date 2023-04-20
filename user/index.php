@@ -10,7 +10,6 @@ try {
     $reqVars = $request->getRequestVariables();
 
     $user = new User();
-    // TODO figure out how to handle getting user info and whether to require being logged in for that
 
 // check which type of request was made
     if ($request->isGet()) {
