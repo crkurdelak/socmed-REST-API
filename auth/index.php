@@ -13,6 +13,7 @@ $reqVars = $request->getRequestVariables();
 $response = array("error" => false, "msg" => "");
 
 /**
+ * Verifies the given password and logs the user in if it is correct.
  * @param $id the user's ID number
  * @param $pw the password input by the user
  * @return void
@@ -21,22 +22,22 @@ function verifyPassword($id, $pw): void
 {
     try {
         $password = (new User)->findById($id)["password"];
+        if ($password) {
+            if (password_verify($pw, $password)) {
+                // register username with session
+                $_SESSION['user_id'] = $id;
+
+                // build response
+                sendStatus($id . " logged in");
+                //echo "Welcome, " .$reqVars['user'];
+            } else {
+                sendStatus("Incorrect password");
+            }
+        } else {
+            sendStatus("No password given");
+        }
     } catch (Exception $e) {
         sendStatus("User not found");
-    }
-    if ($password) {
-        if (password_verify($pw, $password)) {
-            // register username with session
-            $_SESSION['user_id'] = $id;
-
-            // build response
-            sendStatus($id . " logged in");
-            //echo "Welcome, " .$reqVars['user'];
-        } else {
-            sendStatus("Incorrect password");
-        }
-    } else {
-        sendStatus("No password given");
     }
 }
 
@@ -50,6 +51,15 @@ if ($request->isPost()) {
     if(array_key_exists('user_id', $_SESSION)){
         $user_id = $_SESSION["user_id"];
 
+        // if logging in with a username instead of an id, get the corresponding id
+        if (array_key_exists('username', $reqVars)) {
+            try {
+                $id = (new User)->getId($username)["id"];
+            }
+            catch (Exception $e) {
+                sendStatus("User not found");
+            }
+        }
         if ($id === $user_id) {
             sendStatus($user_id . " is already logged in");
             //echo "Already logged in! ".$_SESSION['username'];

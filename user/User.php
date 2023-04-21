@@ -93,6 +93,28 @@ class User
         return ["id" => $user["id"], "username" => $user["username"], "password" => $user["password"]];
     }
 
+    /**
+     * Gets the id of the user with the given username.
+     * @param string $username the user's username
+     * @return array an array containing the user's id
+     * @throws Exception
+     */
+    public function getId(string $username): array {
+        $sql = 'SELECT id FROM blog_user WHERE username = ?';
+
+        $query = $this->db->prepare($sql);
+        $query->execute([$username]);
+
+        $id = $query->fetch(PDO::FETCH_ASSOC);
+
+        if ($id === false) {
+            throw new Exception('blog-db\User not found: ' . $username);
+
+        }
+
+        return ["id" => $id];
+    }
+
 
     /**
      * Updates the username and password of the user with the given id.
