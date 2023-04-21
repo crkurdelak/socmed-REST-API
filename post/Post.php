@@ -91,7 +91,7 @@ class Post
 
         $posts = $query->fetchAll(PDO::FETCH_ASSOC);
 
-        if ($posts === false) {
+        if ($posts === false || count($posts) === 0) {
             throw new Exception('blog-db\Posts not found: user ' . $user_id);
 
         }

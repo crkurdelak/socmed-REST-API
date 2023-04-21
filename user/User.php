@@ -127,28 +127,32 @@ class User
      * @return void
      * @throws Exception
      */
-    public function deleteById(string $id) {
+    public function deleteById(array $data) {
         $sql = 'DELETE FROM blog_user WHERE id = ?';
         $post_sql = 'DELETE FROM post WHERE user_id = ?';
-        $comment_sql = 'DELETE FROM blog_comment JOIN post WHERE post.user_id = ?';
+        $comment_sql = 'DELETE from blog_comment WHERE post_id IN (SELECT id FROM post WHERE post.user_id = ?)';
 
-        $this->db->beginTransaction();
-        // first delete all the comments on the user's posts
-        $comment_query = $this->db->prepare($comment_sql);
-        $comment_query->execute($id);
-        // then delete all the user's posts
-        $post_query = $this->db->prepare($post_sql);
-        $post_query->execute($id);
+        if ($data["id"] == $data["session_userid"]) {
+            $this->db->beginTransaction();
+            // first delete all the comments on the user's posts
+            $comment_query = $this->db->prepare($comment_sql);
+            $comment_query->execute([$data["id"]]);
+            // then delete all the user's posts
+            $post_query = $this->db->prepare($post_sql);
+            $post_query->execute([$data["id"]]);
 
-        $query = $this->db->prepare($sql);
-        $success = $query->execute([$id]);
+            $query = $this->db->prepare($sql);
+            $success = $query->execute([$data["id"]]);
 
-        if (!$success) {
-            throw new Exception('blog-db\Could not delete user: ' . $id);
+            if (!$success) {
+                throw new Exception('blog-db\Could not delete user: ' . $data["id"]);
 
+            } else {
+                $this->db->commit();
+            }
         }
         else {
-            $this->db->commit();
+            throw new Exception('Not logged in as'.$data["id"]. ' your id: '.$data["session_userid"]);
         }
     }
 }

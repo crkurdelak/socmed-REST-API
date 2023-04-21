@@ -91,8 +91,7 @@ class Comment
 
         $comments = $query->fetchAll(PDO::FETCH_ASSOC);
 
-        // TODO fix issue where instead of error, empty array is returned
-        if ($comments === false) {
+        if ($comments === false || count($comments) === 0) {
             throw new Exception('blog-db\Comments not found: post ' . $post_id);
 
         }
