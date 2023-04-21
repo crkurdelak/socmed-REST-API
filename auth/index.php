@@ -12,10 +12,39 @@ $request = new RestRequest();
 $reqVars = $request->getRequestVariables();
 $response = array("error" => false, "msg" => "");
 
+/**
+ * @param $id the user's ID number
+ * @param $pw the password input by the user
+ * @return void
+ */
+function verifyPassword($id, $pw): void
+{
+    try {
+        $password = (new User)->findById($id)["password"];
+    } catch (Exception $e) {
+        sendStatus("User not found");
+    }
+    if ($password) {
+        if (password_verify($pw, $password)) {
+            // register username with session
+            $_SESSION['user_id'] = $id;
+
+            // build response
+            sendStatus($id . " logged in");
+            //echo "Welcome, " .$reqVars['user'];
+        } else {
+            sendStatus("Incorrect password");
+        }
+    } else {
+        sendStatus("No password given");
+    }
+}
+
 if ($request->isPost()) {
     // create session or join existing session
     session_start();
     $id = $reqVars['id'];
+    $username = $reqVars['username'];
 
     // if already logged in
     if(array_key_exists('user_id', $_SESSION)){
@@ -32,27 +61,16 @@ if ($request->isPost()) {
     // if new login
     else {
         if (array_key_exists('id', $reqVars)) {
+            verifyPassword($id, $reqVars["password"]);
+        }
+        else if (array_key_exists('username', $reqVars)) {
             try {
-                $password = (new User)->findById($id)["password"];
-            } catch (Exception $e) {
+                $id = (new User)->findByUsername($username)["id"];
+            }
+            catch (Exception $e) {
                 sendStatus("User not found");
             }
-            if ($password) {
-                if (password_verify($reqVars["password"], $password)) {
-                    // register username with session
-                    $_SESSION['user_id'] = $id;
-
-                    // build response
-                    sendStatus($id . " logged in");
-                    //echo "Welcome, " .$reqVars['user'];
-                }
-                else {
-                    sendStatus("Incorrect password");
-                }
-            }
-            else {
-                sendStatus("No password given");
-            }
+            verifyPassword($id, $reqVars["password"]);
         }
         else {
             echo "No user given";
