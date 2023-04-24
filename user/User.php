@@ -87,6 +87,10 @@ class User
     public function findByUsername(array $data): array {
         $id_array = $this->getId($data["username"]);
 
+        if (!$id_array || $id_array["id"] === null) {
+            throw new Exception('blog-db\User not found: ' . $data["id"]);
+
+        }
         return $this->findById(["id" => $id_array["id"], "session_userid" => $data["session_userid"]]);
     }
 
@@ -105,12 +109,34 @@ class User
         $id_array = $query->fetch(PDO::FETCH_ASSOC);
         $num_rows = $query->rowCount();
 
-        if ($id_array === false || $num_rows < 1) {
+        if ($id_array === false || $num_rows < 1 || $id_array["id"] === null) {
             throw new Exception('blog-db\User not found: ' . $username);
+        }
+        else {
+            return ["id" => $id_array["id"]];
+        }
+    }
+
+    /**
+     * Returns the password of the user with the given id
+     * @param string $id
+     * @return array
+     * @throws Exception
+     */
+    public function getPw(string $id): array
+    {
+        $sql = 'SELECT password FROM blog_user WHERE id = ?';
+        $query = $this->db->prepare($sql);
+        $query->execute([$id]);
+
+        $pw = $query->fetch(PDO::FETCH_ASSOC)["password"];
+
+        if ($pw === null) {
+            throw new Exception('blog-db\Password not found: ' . $id);
 
         }
 
-        return ["id" => $id_array["id"]];
+        return ["password" => $pw];
     }
 
 

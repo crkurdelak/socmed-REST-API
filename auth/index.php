@@ -14,14 +14,14 @@ $response = array("error" => false, "msg" => "");
 
 /**
  * Verifies the given password and logs the user in if it is correct.
- * @param $id the user's ID number
- * @param $pw the password input by the user
+ * @param string $id the user's ID number
+ * @param string $pw the password input by the user
  * @return void
  */
-function verifyPassword($id, $pw): void
+function verifyPassword(string $id, string $pw): void
 {
     try {
-        $password = (new User)->findById($id)["password"];
+        $password = (new User)->getPw($id)["password"];
         if ($password) {
             if (password_verify($pw, $password)) {
                 // register username with session
@@ -37,7 +37,7 @@ function verifyPassword($id, $pw): void
             sendStatus("No password given");
         }
     } catch (Exception $e) {
-        sendStatus("User not found");
+        sendStatus("User not found (verifyPassword)");
     }
 }
 
@@ -75,7 +75,7 @@ if ($request->isPost()) {
         }
         else if (array_key_exists('username', $reqVars)) {
             try {
-                $id = (new User)->findByUsername($username)["id"];
+                $id = (new User)->getId($username)["id"];
             }
             catch (Exception $e) {
                 sendStatus("User not found");
