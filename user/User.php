@@ -150,19 +150,26 @@ class User
         $sql = 'UPDATE blog_user SET username = :username, password = :new_password 
                 WHERE id = :id';
 
-        $queryParams = [
-            ':id' => $data['id'],
-            ':username' => $data['username'],
-            ':new_password' => $data['new_password'],
-            //':old_password' => $data['old_password']
-        ];
+        if ($data["id"] == $data["session_userid"]) {
 
-        $query = $this->db->prepare($sql);
-        $success = $query->execute($queryParams);
-        $num_rows = $query->rowCount();
+            $queryParams = [
+                ':id' => $data['id'],
+                ':username' => $data['username'],
+                ':new_password' => $data['new_password'],
+                //':old_password' => $data['old_password']
+            ];
 
-        if (!$success || $num_rows < 1) {
-            throw new Exception('Failed to update user');
+            $query = $this->db->prepare($sql);
+            $success = $query->execute($queryParams);
+            $num_rows = $query->rowCount();
+
+            if (!$success || $num_rows < 1) {
+                throw new Exception('Failed to update user');
+            }
+        }
+        else{
+            throw new Exception('Can\'t modify that user. your id: '.$data["session_userid"].'
+             this user\'s id:'.$data["id"]);
         }
     }
 
