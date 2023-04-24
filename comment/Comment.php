@@ -21,31 +21,38 @@ class Comment
      * @return void
      * @throws Exception
      */
-    public function create(array $data) {
+    public function create(array $data): void
+    {
         $sql = 'INSERT INTO blog_comment (id, user_id, post_id, comment_date, comment_text) 
         VALUES(:id, :user_id, :post_id, CURRENT_DATE, :comment_text);';
 
-        $id_sql = 'SELECT MAX(id) FROM blog_comment;';
-        $this->db->beginTransaction();
-        $id_query = $this->db->prepare($id_sql);
-        $id_query->execute();
-        $max_id = $id_query->fetch(PDO::FETCH_ASSOC);
-        $id = $max_id["max"] + 1;
+        if ($data["user_id"] == $data["session_userid"]) {
 
-        $queryParams = [
-            ':id' => $id,
-            ':user_id' => $data['user_id'],
-            ':post_id' => $data['post_id'],
-            //':comment_date' => $data['comment_date'],
-            ':comment_text' => $data['comment_text']
-        ];
+            $id_sql = 'SELECT MAX(id) FROM blog_comment;';
+            $this->db->beginTransaction();
+            $id_query = $this->db->prepare($id_sql);
+            $id_query->execute();
+            $max_id = $id_query->fetch(PDO::FETCH_ASSOC);
+            $id = $max_id["max"] + 1;
 
-        $query = $this->db->prepare($sql);
-        $success = $query->execute($queryParams);
-        $this->db->commit();
+            $queryParams = [
+                ':id' => $id,
+                ':user_id' => $data['user_id'],
+                ':post_id' => $data['post_id'],
+                ':comment_text' => $data['comment_text']
+            ];
 
-        if (!$success) {
-            throw new Exception('Failed to create comment');
+            $query = $this->db->prepare($sql);
+            $success = $query->execute($queryParams);
+            $this->db->commit();
+
+            if (!$success) {
+                throw new Exception('Failed to create comment');
+            }
+        }
+        else {
+            throw new Exception('Not logged in as this user. your id: '.$data["session_userid"].'
+             post id:'.$data["id"]);
         }
     }
 

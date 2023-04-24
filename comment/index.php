@@ -50,14 +50,14 @@ try {
             $response["msg"] = "No post id or user id given";
         }
     } elseif ($request->isPost()) {
-        if (array_key_exists('user_id', $_SESSION) && $reqVars['user_id'] === $_SESSION['user_id']) {
+        if (array_key_exists('user_id', $_SESSION)) {
             $response["error"] = false;
             $response["msg"] = "Post";
             if (array_key_exists("user_id", $reqVars)
                 && array_key_exists("post_id", $reqVars) && array_key_exists("comment_text", $reqVars)) {
                 try {
                     $comment->create(["user_id" => $reqVars["user_id"], "post_id" => $reqVars["post_id"],
-                        "comment_text" => $reqVars["comment_text"]]);
+                        "comment_text" => $reqVars["comment_text"], "session_userid" => $reqVars["user_id"]]);
                     $response["error"] = false;
                     $response["msg"] = "Success";
                 } catch (Exception $e) {
@@ -98,9 +98,9 @@ try {
         if (array_key_exists('user_id', $_SESSION)) {
             $response["error"] = false;
             $response["msg"] = "Delete";
-            if (array_key_exists("id", $reqVars) && array_key_exists("user_id", $reqVars)) {
+            if (array_key_exists("id", $reqVars) && array_key_exists("user_id", $reqVars)) { // TODO fix
                 try {
-                    $comment->deleteById(["id" => $reqVars["id"], "session_userid" => $reqVars["user_id"]]);
+                    $comment->deleteById(["id" => $reqVars["id"], "session_userid" => $_SESSION["user_id"]]);
                     $response["error"] = false;
                     $response["msg"] = "Success";
                 } catch (Exception $e) {

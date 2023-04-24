@@ -24,11 +24,6 @@ class Post
     public function create(array $data) {
         $sql = 'INSERT INTO post (id, user_id, post_date, post_text, extra) 
         VALUES(:id, :user_id, CURRENT_DATE, :post_text, :extra);';
-        /*
-        $userid_sql = 'SELECT user_id FROM post WHERE id = ?';
-        $userid_query = $this->db->prepare($userid_sql);
-        $user_id = $userid_query->execute([$data["id"]]);
-        */
 
         if ($data["user_id"] == $data["session_userid"]) {
 
@@ -118,7 +113,8 @@ class Post
      * @return void
      * @throws Exception
      */
-    public function update(array $data) {
+    public function update(array $data): void
+    {
         $sql = 'UPDATE post SET post_text = :post_text, extra = :extra WHERE id = :id';
 
         $userid_sql = 'SELECT user_id FROM post WHERE id = ?';
@@ -149,7 +145,7 @@ class Post
 
     /**
      * Deletes the post with the given id.
-     * @param string $id
+     * @param array $data
      * @return void
      * @throws Exception
      */
