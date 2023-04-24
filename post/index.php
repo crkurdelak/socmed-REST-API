@@ -51,7 +51,7 @@ try {
             $response["msg"] = "No post id or user id given";
         }
     } elseif ($request->isPost()) {
-        if (array_key_exists('user_id', $_SESSION) && $reqVars['user_id'] === $_SESSION['user_id']) {
+        if (array_key_exists('user_id', $_SESSION)) {
             $response["error"] = false;
             $response["msg"] = "Post";
             if (array_key_exists("user_id", $reqVars)
@@ -59,7 +59,7 @@ try {
                 && array_key_exists("extra", $reqVars)) {
                 try {
                     $new_id = $post->create(["user_id" => $reqVars["user_id"], "post_text" => $reqVars["post_text"],
-                        "extra" => json_encode($reqVars["extra"])]);
+                        "extra" => json_encode($reqVars["extra"]), "session_userid" => $reqVars["user_id"]]);
                     $response["error"] = false;
                     $response["msg"] = $new_id;
                 } catch (Exception $e) {

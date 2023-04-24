@@ -129,14 +129,14 @@ class User
         $query = $this->db->prepare($sql);
         $query->execute([$id]);
 
-        $pw = $query->fetch(PDO::FETCH_ASSOC)["password"];
+        $pw_array = $query->fetch(PDO::FETCH_ASSOC);
 
-        if ($pw === null) {
+        if ($pw_array === false || $pw_array["password"] === null) {
             throw new Exception('blog-db\Password not found: ' . $id);
 
         }
 
-        return ["password" => $pw];
+        return ["password" => $pw_array["password"]];
     }
 
 
@@ -151,20 +151,24 @@ class User
                 WHERE id = :id';
 
         if ($data["id"] == $data["session_userid"]) {
+            $password = (new User)->getPw($data["id"])["password"];
+            if (password_verify($password, $data["old_password"])) { // TODO why is this returning false
+                $queryParams = [
+                    ':id' => $data['id'],
+                    ':username' => $data['username'],
+                    ':new_password' => $data['new_password'],
+                ];
 
-            $queryParams = [
-                ':id' => $data['id'],
-                ':username' => $data['username'],
-                ':new_password' => $data['new_password'],
-                //':old_password' => $data['old_password']
-            ];
+                $query = $this->db->prepare($sql);
+                $success = $query->execute($queryParams);
+                $num_rows = $query->rowCount();
 
-            $query = $this->db->prepare($sql);
-            $success = $query->execute($queryParams);
-            $num_rows = $query->rowCount();
-
-            if (!$success || $num_rows < 1) {
-                throw new Exception('Failed to update user');
+                if (!$success || $num_rows < 1) {
+                    throw new Exception('Failed to update user');
+                }
+            }
+            else {
+                throw new Exception('Incorrect password for user '.$data["session_userid"]);
             }
         }
         else{
@@ -205,7 +209,7 @@ class User
             }
         }
         else {
-            throw new Exception('Not logged in as'.$data["id"]. ' your id: '.$data["session_userid"]);
+            throw new Exception('Not logged in as '.$data["id"]. '. your id: '.$data["session_userid"]);
         }
     }
 }
