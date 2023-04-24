@@ -124,7 +124,7 @@ class Comment
             $query = $this->db->prepare($sql);
             $success = $query->execute($queryParams);
 
-            if (!$success) {
+            if (!$success) { // TODO make this throw error correctly
                 throw new Exception('Failed to update comment');
             }
         }
@@ -150,9 +150,9 @@ class Comment
 
         if ($user_id == $data["session_userid"]) {
             $query = $this->db->prepare($sql);
-            $success = $query->execute($data["id"]);
+            $success = $query->execute([$data["id"]]);
 
-            if (!$success) {
+            if (!$success) { // TODO make this throw error correctly
                 throw new Exception('blog-db\Could not delete comment: ' . $data["id"]);
 
             }
