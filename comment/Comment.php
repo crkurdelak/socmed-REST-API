@@ -81,9 +81,8 @@ class Comment
      * @throws Exception
      */
     public function findByPostId(string $post_id): array {
-        //$sql = 'SELECT * FROM blog_comment NATURAL JOIN post WHERE post.id = ?';
-        $sql = 'SELECT blog_comment.*, blog_user.username FROM blog_user RIGHT JOIN blog_comment 
-                ON blog_user.id = blog_comment.user_id RIGHT JOIN post ON post.id = blog_comment.post_id 
+        $sql = 'SELECT blog_comment.*, blog_user.username FROM blog_user RIGHT JOIN post 
+                ON blog_user.id = post.user_id RIGHT JOIN blog_comment ON post.id = blog_comment.post_id 
                                           WHERE post.id = ?';
 
         $query = $this->db->prepare($sql);
@@ -93,7 +92,6 @@ class Comment
 
         if ($comments === false || count($comments) === 0) {
             throw new Exception('blog-db\Comments not found: post ' . $post_id);
-
         }
 
         //return ["id" => $comments["id"], "user_id" => $comments["user_id"], "post_id" => $comments["post_id"],
