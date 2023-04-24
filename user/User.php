@@ -50,47 +50,44 @@ class User
 
     /**
      * Finds the user with the given id.
-     * @param string $id
+     * @param array $data
      * @return array
      * @throws Exception
      */
-    public function findById(string $id): array {
+    public function findById(array $data): array {
         $sql = 'SELECT * FROM blog_user WHERE id = ?';
 
-        $query = $this->db->prepare($sql);
-        $query->execute([$id]);
+        if ($data["id"] == $data["session_userid"]) {
 
-        $user = $query->fetch(PDO::FETCH_ASSOC);
+            $query = $this->db->prepare($sql);
+            $query->execute([$data["id"]]);
 
-        if ($user === false) {
-            throw new Exception('blog-db\User not found: ' . $id);
+            $user = $query->fetch(PDO::FETCH_ASSOC);
 
+            if ($user === false) {
+                throw new Exception('blog-db\User not found: ' . $data["id"]);
+
+            }
+
+            return ["id" => $user["id"], "username" => $user["username"], "password" => $user["password"]];
         }
-
-        return ["id" => $user["id"], "username" => $user["username"], "password" => $user["password"]];
+        else {
+            throw new Exception('Can\'t access that user. your id: '.$data["session_userid"].'
+             this user\'s id:'.$data["id"]);
+        }
     }
 
 
     /**
      * Finds the user with the given username.
-     * @param string $username
+     * @param array $data
      * @return array
      * @throws Exception
      */
-    public function findByUsername(string $username): array {
-        $sql = 'SELECT * FROM blog_user WHERE username = ?';
+    public function findByUsername(array $data): array {
+        $id_array = $this->getId($data["username"]);
 
-        $query = $this->db->prepare($sql);
-        $query->execute([$username]);
-
-        $user = $query->fetch(PDO::FETCH_ASSOC);
-
-        if ($user === false) {
-            throw new Exception('blog-db\User not found: ' . $username);
-
-        }
-
-        return ["id" => $user["id"], "username" => $user["username"], "password" => $user["password"]];
+        return $this->findById(["id" => $id_array["id"], "session_userid" => $data["session_userid"]]);
     }
 
     /**
@@ -105,14 +102,15 @@ class User
         $query = $this->db->prepare($sql);
         $query->execute([$username]);
 
-        $id = $query->fetch(PDO::FETCH_ASSOC);
+        $id_array = $query->fetch(PDO::FETCH_ASSOC);
+        $num_rows = $query->rowCount();
 
-        if ($id === false) {
+        if ($id_array === false || $num_rows < 1) {
             throw new Exception('blog-db\User not found: ' . $username);
 
         }
 
-        return ["id" => $id];
+        return ["id" => $id_array["id"]];
     }
 
 

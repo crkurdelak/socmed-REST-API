@@ -13,12 +13,13 @@ try {
 
 // check which type of request was made
     if ($request->isGet()) {
-        if (array_key_exists('user_id', $_SESSION) && $reqVars['id'] === $_SESSION['user_id']) {
+        if (array_key_exists('user_id', $_SESSION)) {
             $response["error"] = false;
             $response["msg"] = "Get";
             if (array_key_exists("username", $reqVars)) {
                 try {
-                    $queryResult = $user->findByUsername($reqVars["username"]);
+                    $queryResult = $user->findByUsername(["username" => $reqVars["username"],
+                        "session_userid" => $_SESSION['user_id']]);
 
                     $response["error"] = false;
                     $response["id"] = $queryResult["id"];
@@ -30,7 +31,7 @@ try {
                 }
             } elseif (array_key_exists("id", $reqVars)) {
                 try {
-                    $queryResult = $user->findById($reqVars["id"]);
+                    $queryResult = $user->findById(["id" => $reqVars["id"], "session_userid" => $_SESSION['user_id']]);
 
                     $response["error"] = false;
                     $response["id"] = $queryResult["id"];
