@@ -54,12 +54,11 @@ try {
         if (array_key_exists('user_id', $_SESSION)) {
             $response["error"] = false;
             $response["msg"] = "Post";
-            if (array_key_exists("user_id", $reqVars)
-                && array_key_exists("post_text", $reqVars)
+            if (array_key_exists("post_text", $reqVars)
                 && array_key_exists("extra", $reqVars)) {
                 try {
-                    $new_id = $post->create(["user_id" => $reqVars["user_id"], "post_text" => $reqVars["post_text"],
-                        "extra" => json_encode($reqVars["extra"]), "session_userid" => $reqVars["user_id"]]);
+                    $new_id = $post->create(["post_text" => $reqVars["post_text"],
+                        "extra" => json_encode($reqVars["extra"]), "session_userid" => $_SESSION["user_id"]]);
                     $response["error"] = false;
                     $response["msg"] = $new_id;
                 } catch (Exception $e) {

@@ -26,33 +26,26 @@ class Comment
         $sql = 'INSERT INTO blog_comment (id, user_id, post_id, comment_date, comment_text) 
         VALUES(:id, :user_id, :post_id, CURRENT_DATE, :comment_text);';
 
-        if ($data["user_id"] == $data["session_userid"]) {
+        $id_sql = 'SELECT MAX(id) FROM blog_comment;';
+        $this->db->beginTransaction();
+        $id_query = $this->db->prepare($id_sql);
+        $id_query->execute();
+        $max_id = $id_query->fetch(PDO::FETCH_ASSOC);
+        $id = $max_id["max"] + 1;
 
-            $id_sql = 'SELECT MAX(id) FROM blog_comment;';
-            $this->db->beginTransaction();
-            $id_query = $this->db->prepare($id_sql);
-            $id_query->execute();
-            $max_id = $id_query->fetch(PDO::FETCH_ASSOC);
-            $id = $max_id["max"] + 1;
+        $queryParams = [
+            ':id' => $id,
+            ':user_id' => $data['session_userid'], // TODO just get this from session instead
+            ':post_id' => $data['post_id'],
+            ':comment_text' => $data['comment_text']
+        ];
 
-            $queryParams = [
-                ':id' => $id,
-                ':user_id' => $data['user_id'],
-                ':post_id' => $data['post_id'],
-                ':comment_text' => $data['comment_text']
-            ];
+        $query = $this->db->prepare($sql);
+        $success = $query->execute($queryParams);
+        $this->db->commit();
 
-            $query = $this->db->prepare($sql);
-            $success = $query->execute($queryParams);
-            $this->db->commit();
-
-            if (!$success) {
-                throw new Exception('Failed to create comment');
-            }
-        }
-        else {
-            throw new Exception('Not logged in as this user. your id: '.$data["session_userid"].'
-             post id:'.$data["id"]);
+        if (!$success) {
+            throw new Exception('Failed to create comment');
         }
     }
 
@@ -118,7 +111,8 @@ class Comment
 
         $userid_sql = 'SELECT user_id FROM post WHERE id = ?';
         $userid_query = $this->db->prepare($userid_sql);
-        $user_id = $userid_query->execute([$data["id"]]);
+        $userid_query->execute([$data["id"]]);
+        $user_id = $userid_query->fetchColumn(0);
 
         if ($user_id == $data["session_userid"]) {
             $queryParams = [
@@ -148,10 +142,11 @@ class Comment
      */
     public function deleteById(array $data) {
         $sql = 'DELETE FROM blog_comment WHERE id = ?';
-        $userid_sql = 'SELECT user_id FROM post WHERE id = ?';
+        $userid_sql = 'SELECT user_id FROM blog_comment WHERE id = ?';
 
         $userid_query = $this->db->prepare($userid_sql);
-        $user_id = $userid_query->execute([$data["id"]]);
+        $userid_query->execute([$data["id"]]);
+        $user_id = $userid_query->fetchColumn(0);
 
         if ($user_id == $data["session_userid"]) {
             $query = $this->db->prepare($sql);
