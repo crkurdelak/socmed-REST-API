@@ -125,6 +125,6 @@ try {
 }
 catch (Exception $e) {
     $response['error'] = true;
-    $response["msg"] = "Request variables not found";
+    $response["msg"] = $e->getMessage();
     echo json_encode($response);
 }

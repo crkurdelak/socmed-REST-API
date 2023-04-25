@@ -35,7 +35,7 @@ class Comment
 
         $queryParams = [
             ':id' => $id,
-            ':user_id' => $data['session_userid'], // TODO just get this from session instead
+            ':user_id' => $data['session_userid'],
             ':post_id' => $data['post_id'],
             ':comment_text' => $data['comment_text']
         ];

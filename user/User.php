@@ -150,30 +150,28 @@ class User
         $sql = 'UPDATE blog_user SET username = :username, password = :new_password 
                 WHERE id = :id';
 
-        if ($data["id"] == $data["session_userid"]) {
-            $password = (new User)->getPw($data["id"])["password"];
-            if (password_verify($password, $data["old_password"])) { // TODO why is this returning false
-                $queryParams = [
-                    ':id' => $data['id'],
-                    ':username' => $data['username'],
-                    ':new_password' => $data['new_password'],
-                ];
+        $password = (new User)->getPw($data["session_userid"])["password"];
+        echo $password."\n";
+        echo $data["old_password"];
+        // TODO why are the hashes different
 
-                $query = $this->db->prepare($sql);
-                $success = $query->execute($queryParams);
-                $num_rows = $query->rowCount();
+        if (password_verify($password, $data["old_password"])) {
+            $queryParams = [
+                ':id' => $data['session_userid'],
+                ':username' => $data['username'],
+                ':new_password' => $data['new_password'],
+            ];
 
-                if (!$success || $num_rows < 1) {
-                    throw new Exception('Failed to update user');
-                }
-            }
-            else {
-                throw new Exception('Incorrect password for user '.$data["session_userid"]);
+            $query = $this->db->prepare($sql);
+            $success = $query->execute($queryParams);
+            $num_rows = $query->rowCount();
+
+            if (!$success || $num_rows < 1) {
+                throw new Exception('Failed to update user');
             }
         }
-        else{
-            throw new Exception('Can\'t modify that user. your id: '.$data["session_userid"].'
-             this user\'s id:'.$data["id"]);
+        else {
+            throw new Exception('Incorrect password for user '.$data["session_userid"]);
         }
     }
 
@@ -189,27 +187,22 @@ class User
         $post_sql = 'DELETE FROM post WHERE user_id = ?';
         $comment_sql = 'DELETE from blog_comment WHERE post_id IN (SELECT id FROM post WHERE post.user_id = ?)';
 
-        if ($data["id"] == $data["session_userid"]) {
-            $this->db->beginTransaction();
-            // first delete all the comments on the user's posts
-            $comment_query = $this->db->prepare($comment_sql);
-            $comment_query->execute([$data["id"]]);
-            // then delete all the user's posts
-            $post_query = $this->db->prepare($post_sql);
-            $post_query->execute([$data["id"]]);
+        $this->db->beginTransaction();
+        // first delete all the comments on the user's posts
+        $comment_query = $this->db->prepare($comment_sql);
+        $comment_query->execute([$data["session_userid"]]);
+        // then delete all the user's posts
+        $post_query = $this->db->prepare($post_sql);
+        $post_query->execute([$data["session_userid"]]);
 
-            $query = $this->db->prepare($sql);
-            $success = $query->execute([$data["id"]]);
+        $query = $this->db->prepare($sql);
+        $success = $query->execute([$data["session_userid"]]);
 
-            if (!$success) {
-                throw new Exception('blog-db\Could not delete user: ' . $data["id"]);
+        if (!$success) {
+            throw new Exception('blog-db\Could not delete user: ' . $data["session_userid"]);
 
-            } else {
-                $this->db->commit();
-            }
-        }
-        else {
-            throw new Exception('Not logged in as '.$data["id"]. '. your id: '.$data["session_userid"]);
+        } else {
+            $this->db->commit();
         }
     }
 }

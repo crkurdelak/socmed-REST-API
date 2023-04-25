@@ -70,13 +70,13 @@ try {
         }
     } elseif ($request->isPut()) {
         if (array_key_exists('user_id', $_SESSION)) {
-            if (array_key_exists("id", $reqVars) && array_key_exists("username", $reqVars)
+            if (array_key_exists("username", $reqVars)
                 && array_key_exists("old_password", $reqVars) && array_key_exists("new_password", $reqVars)) {
                 try {
                     // encrypt new password
                     $cipherPass = password_hash($reqVars["new_password"], CRYPT_BLOWFISH);
                     $cipherPassOld = password_hash($reqVars["old_password"], CRYPT_BLOWFISH);
-                    $user->update(['id' => $reqVars['id'], "username" => $reqVars['username'],
+                    $user->update(["username" => $reqVars['username'],
                         "new_password" => $cipherPass, "old_password" => $cipherPassOld,
                         "session_userid" => $_SESSION["user_id"]]);
                     $response["error"] = false;
@@ -98,9 +98,9 @@ try {
         if (array_key_exists('user_id', $_SESSION)) {
             $response["error"] = false;
             $response["msg"] = "Delete";
-            if (array_key_exists("username", $reqVars) || array_key_exists("id", $reqVars)) {
+            if (array_key_exists("username", $reqVars)) {
                 try {
-                    $user->deleteById(["id" => $reqVars["id"], "session_userid" => $_SESSION["user_id"]]);
+                    $user->deleteById(["session_userid" => $_SESSION["user_id"]]);
                     $response["error"] = false;
                     $response["msg"] = "Success";
                 } catch (Exception $e) {
@@ -124,6 +124,6 @@ try {
 }
 catch (Exception $e) {
     $response['error'] = true;
-    $response["msg"] = "Request variables not found";
+    $response["msg"] = $e->getMessage();
     echo json_encode($response);
 }
