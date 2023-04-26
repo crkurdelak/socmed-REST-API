@@ -1,5 +1,19 @@
 # Final Project
 
-Commit all the code for your final project to this repository. Include a description of your REST API here in the README.md file.
+## Methods for Auth
+| Operation | Behavior                                          | Parameters               | Response                                                                                                                      | Example Response                                        |
+|-----------|---------------------------------------------------|--------------------------|-------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
+| Create    | Logs in the given user and creates a new session. | id or username, password | http status - **200** if the login was successful, otherwise **400**<br/>message - a message describing the error or success. | {"status":"2 logged in"} OR {"status":"User not found"} |
+| Delete    | Logs out the current user.                        | none                     | http status - **200** <br/>message - a message describing the session that was ended.                                         | {"status":"Session for 2 ended."}                       |
 
-TODO definitions
+## Methods for User
+| Operation | Behavior                                                        | Parameters                           | Response                                                                                                                                 | Example Response                                                                                                                                                             |
+|-----------|-----------------------------------------------------------------|--------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Create    | Creates a new user                                              | username, password                   | http status - **200** if the user was successfully created, otherwise **400**<br/>message - a message describing the error or success.   | {"error":false,"msg":"Success"} OR {"error":true,"msg":"Missing parameter"}                                                                                                  |
+| Retrieve  | Returns the user with the given username or id.                 | id or username                       | http status - **200** if the user was retrieved successfully, otherwise **400**<br/>message - a message describing the error or success. | {"error":false,"msg":"Get","id":2,"username":"kitykat123","password":"$2y$10$32XNimYFReMvkbPU8jqrwuLYJNvyHM5N9lOgFTsGBrtsXkcE3eKMu"} OR {"error":true,"msg":"Not logged in"} |
+| Update    | Updates the user currently logged in with the given parameters. | username, old_password, new_password | http status - **200** if the update was successful, otherwise **400**<br/>message - a message describing the error or success.           | {"error":false,"msg":"Success"} OR {"error":true,"msg":"Incorrect password for user 2"}                                                                                      |
+| Delete    | Deletes the user currently logged in.                           | none                                 | http status - **200** if the user was deleted successfully, otherwise **400**<br/>message - a message describing the error or success.   | {"error":false,"msg":"Success"}                                                                                                                                              |
+
+## Methods for Post
+
+## Methods for Comment
