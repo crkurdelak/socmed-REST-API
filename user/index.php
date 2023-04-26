@@ -75,9 +75,8 @@ try {
                 try {
                     // encrypt new password
                     $cipherPass = password_hash($reqVars["new_password"], CRYPT_BLOWFISH);
-                    $cipherPassOld = password_hash($reqVars["old_password"], CRYPT_BLOWFISH);
                     $user->update(["username" => $reqVars['username'],
-                        "new_password" => $cipherPass, "old_password" => $cipherPassOld,
+                        "new_password" => $cipherPass, "old_password" => $reqVars["old_password"],
                         "session_userid" => $_SESSION["user_id"]]);
                     $response["error"] = false;
                     $response["msg"] = "Success";
@@ -98,18 +97,13 @@ try {
         if (array_key_exists('user_id', $_SESSION)) {
             $response["error"] = false;
             $response["msg"] = "Delete";
-            if (array_key_exists("username", $reqVars)) {
-                try {
-                    $user->deleteById(["session_userid" => $_SESSION["user_id"]]);
-                    $response["error"] = false;
-                    $response["msg"] = "Success";
-                } catch (Exception $e) {
-                    $response["error"] = true;
-                    $response["msg"] = $e->getMessage();
-                }
-            } else {
+            try {
+                $user->deleteById(["session_userid" => $_SESSION["user_id"]]);
+                $response["error"] = false;
+                $response["msg"] = "Success";
+            } catch (Exception $e) {
                 $response["error"] = true;
-                $response["msg"] = "No id given";
+                $response["msg"] = $e->getMessage();
             }
         }
         else {

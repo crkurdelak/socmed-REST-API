@@ -151,11 +151,8 @@ class User
                 WHERE id = :id';
 
         $password = (new User)->getPw($data["session_userid"])["password"];
-        echo $password."\n";
-        echo $data["old_password"];
-        // TODO why are the hashes different
 
-        if (password_verify($password, $data["old_password"])) {
+        if (password_verify($data["old_password"], $password)) {
             $queryParams = [
                 ':id' => $data['session_userid'],
                 ':username' => $data['username'],
