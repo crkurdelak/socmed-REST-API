@@ -80,10 +80,12 @@ if ($request->isPost()) {
             catch (Exception $e) {
                 sendStatus("User not found");
             }
-            verifyPassword($id, $reqVars["password"]);
+            if ($id) {
+                verifyPassword($id, $reqVars["password"]);
+            }
         }
         else {
-            echo "No user given";
+            sendStatus("No user given");
         }
     }
 
