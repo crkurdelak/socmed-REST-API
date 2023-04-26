@@ -123,6 +123,6 @@ try {
 }
 catch (Exception $e) {
     $response['error'] = true;
-    $response["msg"] = $e->getMessage(); // TODO make all other ones also do this
+    $response["msg"] = $e->getMessage();
     echo json_encode($response);
 }

@@ -126,7 +126,7 @@ class Post
             $query = $this->db->prepare($sql);
             $success = $query->execute($queryParams);
 
-            if (!$success) { // TODO make this throw error correctly
+            if (!$success) {
                 throw new Exception('Failed to update post');
             }
         }
@@ -161,7 +161,7 @@ class Post
             $query = $this->db->prepare($sql);
             $success = $query->execute([$data["id"]]);
 
-            if (!$success) { // TODO make this throw error correctly
+            if (!$success) {
                 throw new Exception('blog-db\Could not delete post: ' . $data["id"]);
 
             }
