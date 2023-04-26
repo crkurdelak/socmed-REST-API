@@ -1,0 +1,830 @@
+{
+	"info": {
+		"_postman_id": "73a0281a-8ebd-47ef-b61a-ab1837ac9a29",
+		"name": "CSIS314",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25580234"
+	},
+	"item": [
+		{
+			"name": "teach-yourself",
+			"item": [
+				{
+					"name": "create invoice",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"cust_id\":\"1000000001\", \"date\":\"2023-03-12\", \"items\":[{\"prod_id\":\"BR01\", \"price\":\"10\", \"quantity\":\"10\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://192.168.56.102/teach-yourself/invoice/index.php",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"56",
+								"102"
+							],
+							"path": [
+								"teach-yourself",
+								"invoice",
+								"index.php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "retrieve invoice",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"invoice_num\":\"20005\"}"
+						},
+						"url": {
+							"raw": "http://192.168.56.102/teach-yourself/invoice?invoice_num=20005",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"56",
+								"102"
+							],
+							"path": [
+								"teach-yourself",
+								"invoice"
+							],
+							"query": [
+								{
+									"key": "invoice_num",
+									"value": "20005"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "retrieve customer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://192.168.56.102/teach-yourself/customer?customer_id=1000000006",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"56",
+								"102"
+							],
+							"path": [
+								"teach-yourself",
+								"customer"
+							],
+							"query": [
+								{
+									"key": "customer_id",
+									"value": "1000000006"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "insert customer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\":\"Bobs Toy Store\", \"email\":\"bobstoystore@gmail.com\", \"address\":\"1234 Example St\", \"city\":\"Portland\", \"state\":\"OR\", \"zip\":\"97217\", \"country\":\"United States\", \"contact\":\"email\"}"
+						},
+						"url": {
+							"raw": "http://192.168.56.102/teach-yourself/customer/index.php",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"56",
+								"102"
+							],
+							"path": [
+								"teach-yourself",
+								"customer",
+								"index.php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete invoice",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"invoice_num\": \"20014\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://192.168.56.102/teach-yourself/invoice/index.php",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"56",
+								"102"
+							],
+							"path": [
+								"teach-yourself",
+								"invoice",
+								"index.php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete customer",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"bobstoystore@gmail.com\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://192.168.56.102/teach-yourself/customer/index.php",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"56",
+								"102"
+							],
+							"path": [
+								"teach-yourself",
+								"customer",
+								"index.php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update customer",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"cust_id\":\"1000000006\", \"name\":\"Bobys Toy Store\", \"email\":\"bobystoystore@gmail.com\", \"address\":\"1234 Example Rd\", \"city\":\"Portland\", \"state\":\"OR\", \"zip\":\"97217\", \"country\":\"United States\", \"contact\":\"email\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://192.168.56.102/teach-yourself/customer/index.php",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"56",
+								"102"
+							],
+							"path": [
+								"teach-yourself",
+								"customer",
+								"index.php"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "blog-db",
+			"item": [
+				{
+					"name": "auth",
+					"item": [
+						{
+							"name": "login with id num",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"id\" : 2, \"password\" : \"123qat\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://web.cs.georgefox.edu/~ckurdelak20/auth/index.php/",
+									"protocol": "http",
+									"host": [
+										"web",
+										"cs",
+										"georgefox",
+										"edu"
+									],
+									"path": [
+										"~ckurdelak20",
+										"auth",
+										"index.php",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "login with username",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"username\" : \"a\", \"password\" : \"a\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://web.cs.georgefox.edu/~ckurdelak20/auth/index.php/",
+									"protocol": "http",
+									"host": [
+										"web",
+										"cs",
+										"georgefox",
+										"edu"
+									],
+									"path": [
+										"~ckurdelak20",
+										"auth",
+										"index.php",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "logout",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://web.cs.georgefox.edu/~ckurdelak20/auth/index.php/",
+									"protocol": "http",
+									"host": [
+										"web",
+										"cs",
+										"georgefox",
+										"edu"
+									],
+									"path": [
+										"~ckurdelak20",
+										"auth",
+										"index.php",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "user",
+					"item": [
+						{
+							"name": "create user",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"username\": \"a\", \"password\": \"a\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://web.cs.georgefox.edu/~ckurdelak20/user/index.php/",
+									"protocol": "http",
+									"host": [
+										"web",
+										"cs",
+										"georgefox",
+										"edu"
+									],
+									"path": [
+										"~ckurdelak20",
+										"user",
+										"index.php",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get user by id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://web.cs.georgefox.edu/~ckurdelak20/user/index.php?id=2",
+									"protocol": "http",
+									"host": [
+										"web",
+										"cs",
+										"georgefox",
+										"edu"
+									],
+									"path": [
+										"~ckurdelak20",
+										"user",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get user by username",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://web.cs.georgefox.edu/~ckurdelak20/user/index.php?username=kitykat123",
+									"protocol": "http",
+									"host": [
+										"web",
+										"cs",
+										"georgefox",
+										"edu"
+									],
+									"path": [
+										"~ckurdelak20",
+										"user",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "kitykat123"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update user",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"username\": \"kitykat123\", \"old_password\": \"qat123\", \"new_password\" : \"123qat\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://web.cs.georgefox.edu/~ckurdelak20/user/index.php/",
+									"protocol": "http",
+									"host": [
+										"web",
+										"cs",
+										"georgefox",
+										"edu"
+									],
+									"path": [
+										"~ckurdelak20",
+										"user",
+										"index.php",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete user by id",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"id\" : \"1\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://web.cs.georgefox.edu/~ckurdelak20/user/index.php/",
+									"protocol": "http",
+									"host": [
+										"web",
+										"cs",
+										"georgefox",
+										"edu"
+									],
+									"path": [
+										"~ckurdelak20",
+										"user",
+										"index.php",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "post",
+					"item": [
+						{
+							"name": "create post",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"post_text\" : \"hello post\", \"extra\" : \"\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://web.cs.georgefox.edu/~ckurdelak20/post/index.php/",
+									"protocol": "http",
+									"host": [
+										"web",
+										"cs",
+										"georgefox",
+										"edu"
+									],
+									"path": [
+										"~ckurdelak20",
+										"post",
+										"index.php",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one post",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://web.cs.georgefox.edu/~ckurdelak20/post/index.php/?id=4",
+									"protocol": "http",
+									"host": [
+										"web",
+										"cs",
+										"georgefox",
+										"edu"
+									],
+									"path": [
+										"~ckurdelak20",
+										"post",
+										"index.php",
+										""
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all posts by user",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://web.cs.georgefox.edu/~ckurdelak20/post/index.php/?user_id=2",
+									"protocol": "http",
+									"host": [
+										"web",
+										"cs",
+										"georgefox",
+										"edu"
+									],
+									"path": [
+										"~ckurdelak20",
+										"post",
+										"index.php",
+										""
+									],
+									"query": [
+										{
+											"key": "user_id",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update post",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"id\" : 3, \"post_text\" : \"get edited!\", \"extra\" : {}}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://web.cs.georgefox.edu/~ckurdelak20/post/index.php/",
+									"protocol": "http",
+									"host": [
+										"web",
+										"cs",
+										"georgefox",
+										"edu"
+									],
+									"path": [
+										"~ckurdelak20",
+										"post",
+										"index.php",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete post",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"id\" : 3, \"user_id\" : 3}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://web.cs.georgefox.edu/~ckurdelak20/post/index.php/",
+									"protocol": "http",
+									"host": [
+										"web",
+										"cs",
+										"georgefox",
+										"edu"
+									],
+									"path": [
+										"~ckurdelak20",
+										"post",
+										"index.php",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "comment",
+					"item": [
+						{
+							"name": "create comment",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"post_id\" : 1, \"comment_text\" : \"this is a comment\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://web.cs.georgefox.edu/~ckurdelak20/comment/index.php/",
+									"protocol": "http",
+									"host": [
+										"web",
+										"cs",
+										"georgefox",
+										"edu"
+									],
+									"path": [
+										"~ckurdelak20",
+										"comment",
+										"index.php",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one comment",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://web.cs.georgefox.edu/~ckurdelak20/comment/index.php?id=1",
+									"protocol": "http",
+									"host": [
+										"web",
+										"cs",
+										"georgefox",
+										"edu"
+									],
+									"path": [
+										"~ckurdelak20",
+										"comment",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all comments on post",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://web.cs.georgefox.edu/~ckurdelak20/comment/index.php?post_id=1",
+									"protocol": "http",
+									"host": [
+										"web",
+										"cs",
+										"georgefox",
+										"edu"
+									],
+									"path": [
+										"~ckurdelak20",
+										"comment",
+										"index.php"
+									],
+									"query": [
+										{
+											"key": "post_id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update comment",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"id\" : 1, \"comment_text\" : \"i am editing this! haha get edited\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://web.cs.georgefox.edu/~ckurdelak20/comment/index.php/",
+									"protocol": "http",
+									"host": [
+										"web",
+										"cs",
+										"georgefox",
+										"edu"
+									],
+									"path": [
+										"~ckurdelak20",
+										"comment",
+										"index.php",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete comment",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"id\" : 1}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://web.cs.georgefox.edu/~ckurdelak20/comment/index.php/",
+									"protocol": "http",
+									"host": [
+										"web",
+										"cs",
+										"georgefox",
+										"edu"
+									],
+									"path": [
+										"~ckurdelak20",
+										"comment",
+										"index.php",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
